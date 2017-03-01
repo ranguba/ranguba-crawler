@@ -49,6 +49,10 @@ module RangubaCrawler
           case response
           when Net::HTTPSuccess
             # pp(JSON.parse(response.body))
+          when Net::HTTPClientError
+            puts("Failed to request: #{response.code}")
+            puts(path)
+            pp(JSON.parse(response.body))
           else
             puts("Failed to request: #{response.code}")
             puts(path)
