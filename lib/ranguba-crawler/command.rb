@@ -41,13 +41,21 @@ module RangubaCrawler
           if @suffix
             next unless path.extname == @suffix
           end
-          response = Net::HTTP.post_form(api_uri,
-                                         {
-                                           "uri" => path_to_uri(path),
-                                           "body" => path.open("rb", &:read),
-                                         })
-          p response
-          pp JSON.parse(response.body)
+          parameters = {
+            "uri" => path_to_uri(path),
+            "body" => path.open("rb", &:read),
+          }
+          response = Net::HTTP.post_form(api_uri, parameters)
+          case response
+          when Net::HTTPSuccess
+            # pp(JSON.parse(response.body))
+          else
+            puts("Failed to request: #{response.code}")
+            puts(path)
+            # puts(api_uri)
+            # pp(parameters.inspect)
+            # puts(response.body)
+          end
         end
       end
 
